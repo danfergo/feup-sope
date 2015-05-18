@@ -11,13 +11,20 @@ Quando o último balcão encerrar, a loja fecha.
 O último balcão, antes de encerrar, recolhe os dados disponíveis e gera 
 estatísticas tais como o número total de clientes atendidos na loja e em cada 
 balcão, o tempo médio de atendimento por
- cliente, geral e por balcão e o 
-tempo de abertura da loja e de cada balcão. 
+cliente, geral e por balcão e o tempo de abertura da loja e de cada balcão. 
 
 ## Utilização
+A simulação do funcionamento da loja decorre mediante o arranque de dois tipos de programas, 
+um ligado aos balcões de atendimento (**balcao**) e outro à geração de clientes (**ger_cl**). 
 
-Balcão:
+### Balcão:
 O programa tipo ligado aos balcões é invocado na linha comando, tantas vezes quantas o utilizador quiser, 
 por: 
 
     balcao <nome_mempartilhada> <tempo_abertura> 
+    
+
+Cliente:
+### O programa tipo associado aos clientes é invocado na linha comando uma só vez, por: 
+
+    ger_cl <nome_mempartilhada> <num_clientes> 
