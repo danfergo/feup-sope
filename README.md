@@ -24,7 +24,7 @@ por:
     balcao <nome_mempartilhada> <tempo_abertura> 
     
 
-Cliente:
-### O programa tipo associado aos clientes é invocado na linha comando uma só vez, por: 
+### Cliente:
+O programa tipo associado aos clientes é invocado na linha comando uma só vez, por: 
 
     ger_cl <nome_mempartilhada> <num_clientes> 
