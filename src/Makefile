@@ -3,11 +3,11 @@ all: makedirs cliente balcao ger_cl
 
 #compiling
 
-balcao: balcao.o Loja.o Balcao.o
-	gcc -Wall ../out/cliente.o ../out/classes/Loja.o ../out/classes/Balcao.o -o ../bin/balcao
+balcao: balcao.o Store.o Counter.o
+	gcc -Wall ../out/cliente.o ../out/classes/Store.o ../out/classes/Counter.o -o ../bin/balcao
 
-cliente: cliente.o Loja.o Balcao.o
-	gcc -Wall ../out/cliente.o ../out/classes/Loja.o ../out/classes/Balcao.o -o ../bin/cliente
+cliente: cliente.o Store.o Counter.o
+	gcc -Wall ../out/cliente.o ../out/classes/Store.o ../out/classes/Counter.o -o ../bin/cliente
 
 ger_cl: ger_cl.o
 	gcc -Wall ../out/ger_cl.o -o ../bin/ger_cl
@@ -15,10 +15,10 @@ ger_cl: ger_cl.o
 
 #linking all
 
-balcao.o: balcao.c classes/Loja.h classes/Balcao.h
+balcao.o: balcao.c classes/Store.h classes/Counter.h
 	gcc -Wall -c balcao.c -o ../out/balcao.o
 
-cliente.o: cliente.c classes/Loja.h classes/Balcao.h
+cliente.o: cliente.c classes/Store.h classes/Counter.h
 	gcc -Wall -c cliente.c -o ../out/cliente.o
 
 ger_cl.o: ger_cl.c
@@ -26,11 +26,11 @@ ger_cl.o: ger_cl.c
 
 
 # classes
-Balcao.o: classes/Balcao.h classes/Balcao.c
-	cc -Wall -c classes/Balcao.c -o ../out/classes/Balcao.o
+Counter.o: classes/Counter.h classes/Counter.c
+	cc -Wall -c classes/Counter.c -o ../out/classes/Counter.o
 
-Loja.o: classes/Loja.h classes/Loja.c
-	cc -Wall -c classes/Loja.c -o ../out/classes/Loja.o
+Store.o: classes/Store.h classes/Store.c
+	cc -Wall -c classes/Store.c -o ../out/classes/Store.o
 
 
 # auxiliar

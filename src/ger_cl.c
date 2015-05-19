@@ -12,6 +12,9 @@
 
 int main(int argc, const char* argv[],const char* envp[]) {
 
+  //TODO Se a loja ainda não estiver aberta (i.e., se a memória partilhada não existir), o programa termina;
+
+
   if(argc < 3){
     printf("Usage: \n\tger_cl <nome_mempartilhada> <num_clientes> \n");
   }
