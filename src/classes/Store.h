@@ -9,7 +9,6 @@
 typedef struct Store {
     int nCounters;
     Counter counters[MAX_COUNTERS];
-
 } Store;
 
 #endif
