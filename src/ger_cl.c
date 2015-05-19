@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #define MAX_CWD_LEN     1024
 #define MAX_SMEM_LEN    1024
@@ -33,12 +35,13 @@ int main(int argc, const char* argv[],const char* envp[]) {
         ptr++;
   } **/
 
-
   for(i = 0; i < nClients; i++){
 
       pid = fork();
 
       if(pid == 0){
+          printf("%d \n", i);
+
           execle(cli_path,"cliente", NULL, envp);
           perror("launching client");
           return 2;
@@ -46,6 +49,14 @@ int main(int argc, const char* argv[],const char* envp[]) {
       }else if(pid < 0){
           perror("when forking to launch client");
           return 3;
+      }
+  }
+
+  int status;
+  for(i = 0; i < nClients; i++){
+      if(wait(&status) == -1){
+            perror("waiting for child client to end");
+            return 4;
       }
   }
 

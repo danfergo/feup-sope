@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 cd src
-make
+make -s
 
 
 # cria folder
@@ -15,6 +15,5 @@ make
 
 
 # run
-# cd bin
-# ./cliente mempatilhada 50
-# ./ger_cl mempatilhada 50
+cd ../bin
+ ./ger_cl mempatilhada 50
