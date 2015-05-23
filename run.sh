@@ -16,4 +16,4 @@ make -s
 
 # run
 cd ../bin
- ./ger_cl mempatilhada 50
+ ./ger_cl mempatilhada 2

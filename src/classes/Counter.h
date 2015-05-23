@@ -14,6 +14,6 @@ typedef struct counter {
 } Counter;
 
 
-void Counter(Counter * self);
+void Counter_init(Counter * self);
 
 #endif

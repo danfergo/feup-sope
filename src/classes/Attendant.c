@@ -1,8 +1,16 @@
+#include <time.h>
+#include <stdlib.h>
 #include "Attendant.h"
+
+#define 
+srand(time(NULL));
+
 
 Attendant * attendant_new(int fifo_descriptor){
 
-    Attendant * self =  //TODO malloc p/ struct.
+    Attendant * self = malloc(sizeof(struct Attendant)); //TODO malloc p/ struct.
+
+    self->duration = rand() % 11;
     //TODO duration = random int 0 - 10
     self->fifo_descriptor = fifo_descriptor;
     return self;

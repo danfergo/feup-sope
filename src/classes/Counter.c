@@ -1,5 +1,5 @@
 #include "Counter.h"
 
-void Counter(Counter * self){
-  self->opening_time = 123;
+void Counter_init(Counter * self){
+  self->openingTime = 123;
 }

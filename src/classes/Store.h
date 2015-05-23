@@ -12,12 +12,13 @@ typedef struct Store {
     Counter counters[MAX_COUNTERS];
 } Store;
 
-void Store(Store * self);
+void Store_init(Store * self);
 int Store_open(Store * self);
 int Store_close(Store * self);
+void Store_addCounter(Store * self,int index, Counter * counter);
 
 void Store_getFreerCounter(Store * self, Counter * counter);
-int Store_getOpenedCounter(Store * self,int index, Counter * counter);
+int Store_getOpenedCounter(Store * self, int index, Counter * counter);
 
 
 
