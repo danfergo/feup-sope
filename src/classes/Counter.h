@@ -5,15 +5,15 @@
 
 typedef struct counter {
     int number;
-    int opening_time;
+    int openingTime;
     int duration;
-    char fifo_name[MAX_FIFO_NAME_LEN];
-    int in_service;
-    int already_attended;
-    int service_average_duration;
+    char fifoName[MAX_FIFO_NAME_LEN];
+    int inService;
+    int alreadyAttended;
+    int serviceAverageDuration;
 } Counter;
 
 
-void init_counter(Counter * b);
+void Counter(Counter * self);
 
 #endif

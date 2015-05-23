@@ -1,23 +1,55 @@
+#include <unistd.h>
 #include <stdio.h>
 
 #include "classes/Store.h"
 #include "classes/Counter.h"
 
-/**
-Nome do FIFO cliente: tem o formato "fc_pid", em que pid é o identificador de sistema do processo
-cliente (diferente de ger_cl, por via do fork()...), e é relativo ao diretório /tmp
-**/
+
+#define MAX_MSG_LENGTH     2048
+
+
 int main(int argc, const char* argv[]) {
+    pid_t pid = getpid();
 
-  //TODO cria um FIFO privado
+    char smem[];
+    //verfiy arguments //TODO
 
-  //TODO acede à Tabela de Balcões, partilhada, para ver os balcões abertos e número de cliente em atendimento em cada um
 
-  //TODO Escolhe o balcão com menor número de clientes em atendimento
+    //crate private fifo
+    char cFifoPath[MAX_FIFO_NAME_LEN] = "/tmp/fc_";
+    sprintf(str, "%d", pid);
 
-  //TODO envia ao FIFO desse balcão a identificação do seu FIFO privado
-  //TODO Bloqueia neste FIFO, esperando a chegada da mensagem "fim_atendimento"
+    if(mkfifo(cFifoPath, 0777) < 0){ // TODO what mode ?
+        perror("making private fifo");
+    }
 
-  //TODO termina de seguida, eliminando antes o FIFO criado
-  return 0;
+    //acede à Tabela de Balcões, partilhada, para ver os balcões abertos
+    Store store;
+    if(smem_getOpenedStore(smem, &store) == -1){
+        printf("Store isn't opend yet. Come back later. \n");
+        return 1;
+    }
+
+    //Escolhe o balcão com menor número de clientes em atendimento
+    Counter counter;
+    Store_getFreerCounterIndex(&store,&counter); //TODO check erros
+
+
+    int bFifoFd = open(counter->fifoName, WRONLY); //TODO check errors
+    write(bFifoFd,message,MAX_MSG_LENGTH); //TODO  ha possibilidade de nao ser escrita a mensagem toda de 1x?
+
+
+    char message[MAX_MSG_LEGTH];
+    int cFifoFd = open (cFifoPath, O_RDONLY), readBytes; //TODO check errors
+    do {
+        readBytes = read(cFifoFd,message,MAX_MSG_LENGTH);
+    }while(readBytes != 0 && strcmp(message,"fim_atendimento") != 0);
+
+    if(readBytes != 0){     //TODO improve message handle.
+        printf("Success.");
+    }
+
+    close (cFifoFd);  //TODO check errors
+    unlink(cFifoPath);  //TODO check errors
+    return 0;
 }
