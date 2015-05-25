@@ -1,23 +1,25 @@
-#include <time.h>
-#include <stdlib.h>
 #include "Attendant.h"
 
-#define 
+#include <time.h>
+#include <stdlib.h>
+
+/**
+#define
 srand(time(NULL));
+**/
 
+Attendant * Attendant_new(Counter * counter, char fifo_path[]){
 
-Attendant * attendant_new(int fifo_descriptor){
+    //Attendant * self = malloc(sizeof(struct Attendant)); //TODO malloc p/ struct.
 
-    Attendant * self = malloc(sizeof(struct Attendant)); //TODO malloc p/ struct.
-
-    self->duration = rand() % 11;
+    //self->duration = rand() % 11;
     //TODO duration = random int 0 - 10
-    self->fifo_descriptor = fifo_descriptor;
-    return self;
+    //self->fifo_descriptor = fifo_descriptor;
+    return NULL;
 }
 
 
-void attendant_run(Attendant * self){
+void Attendant_run(Attendant * self){
     /*TODO simula o atendimento
     adormecendo por um tempo em segundos igual
     ao no de clientes do balcão mais uma unidade,
@@ -33,9 +35,8 @@ void attendant_run(Attendant * self){
    tempo médio de atendimento por cliente */
 
 
-    return self;
 }
 
-void attendant_delete(Attendant * self){
+void Attendant_delete(Attendant * self){
     //TODO free self.
 }

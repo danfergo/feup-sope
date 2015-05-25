@@ -1,13 +1,15 @@
 #ifndef ATTENDANT_H
 #define ATTENDANT_H
 
+#include "Counter.h"
+
 typedef struct attendant {
-    int fifo_descriptor;
-    int duration;
+    Counter * counter;
+    char fifo_path[150];
 } Attendant;
 
-Attendant * attendant_new(int fifo_descriptor);
-Attendant * attendant_run(Attendant * self);
-void attendant_delete(Attendant * self);
+Attendant * Attendant_new(Counter * counter, char fifo_path[]);
+void Attendant_run(Attendant * self);
+void Attendant_delete(Attendant * self);
 
 #endif

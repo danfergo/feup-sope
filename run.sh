@@ -16,4 +16,5 @@ make -s
 
 # run
 cd ../bin
- ./ger_cl mempatilhada 2
+./cliente /mempatilhada 2
+./balcao /mempatilhada 2

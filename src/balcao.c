@@ -1,27 +1,74 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <signal.h>
 
 #include "classes/Store.h"
+#include "classes/Attendant.h"
 
-int main(int argc, const char* argv[]) {
 
-  /*TODO inicia a sua operação verificando se a memória partilhada nomeada já existe e,
-  se não existir, cria-a e inicializa as variáveis globais nela contidas */
 
-  //TODO cria um FIFO para atendimento de clientes.
+#define MAX_MSG_LENGTH  2048
 
-  /*TODO Na memória partilhada atualiza as variáveis relevantes,
-   como a que guarda o no de balcões disponíveis,
-   e cria e preenche uma linha nova na Tabela de Balcões da memória partilhada */
+char smem[1024];
+FILE * counterFifo;
+Store * store;
+Counter * counter;
 
-  /*TODO criar e iniciar as outras variáveis locais necessárias (e.g.
-     variáveis de sincronização locais, necessárias ao acesso correto de todos os threads do processo à linha
-     referente ao balcão, na Tabela de Balcões da memória partilhada global) */
+void leave(int signal){
+    Store_closeCounter(store,counter);
+    fclose(counterFifo);
 
-  while(1){
-    //TODO coloca-se numa espera bloqueante no FIFO do balcão enquanto um novo cliente não chega
+    if(store->nCounters == 0){
+        Store_close(smem, store);
+    }
 
-    //TODO gera um thread de atendimento (passando-lhe como parâmetro a identificação do FIFO do cliente)
-  }
+}
 
-  return 0;
+
+int main(int argc, const char* argv[],const char* envp[]) {
+
+    if (argc < 3){
+        printf("Usage: balcao <nome_mempartilhada> <duração> \n"); //TODO change to the correct function call
+        exit(1);
+    }
+
+    strcpy(smem,argv[1]);
+    signal(SIGINT,leave);
+    setbuf(stdout, NULL);
+
+    store = Store_open(smem);
+    counter = Store_openCounter(store);
+
+    printf("N open counters: %d \n", store->nCounters);
+
+    counterFifo = fopen(counter->fifoName, "r+");
+    if (counterFifo == NULL){
+        perror ("Error opening file");
+        return 1;
+    }
+
+
+    /** TODO criar e iniciar as outras variáveis locais necessárias (e.g.
+    variáveis de sincronização locais, necessárias ao acesso correto de todos os threads do processo à linha
+    referente ao balcão, na Tabela de Balcões da memória partilhada global) **/
+
+
+    char message[MAX_MSG_LENGTH];
+
+    printf("Listening on %s: \n", counter->fifoName);
+    while(1){
+        fscanf(counterFifo, "%s", message);
+        //read(fileno(counterFifo), message, 12);
+        printf("[%s]<--%s", counter->fifoName, message);
+        Attendant_run(Attendant_new(counter, message));
+    }
+
+    leave(0);
+
+    return 0;
 }

@@ -13,19 +13,17 @@ typedef struct Store {
 } Store;
 
 void Store_init(Store * self);
-int Store_open(Store * self);
-int Store_close(Store * self);
-void Store_addCounter(Store * self,int index, Counter * counter);
 
-void Store_getFreerCounter(Store * self, Counter * counter);
-int Store_getOpenedCounter(Store * self, int index, Counter * counter);
-
+Counter * Store_getFreerCounter(Store * self);
+Counter * Store_getOpenedCounter(Store * self, int index);
+Counter * Store_openCounter(Store * self);
+void Store_closeCounter(Store * self,const Counter * counter);
 
 
 
-int smem_getOpenedStore(char smem[], Store * store);
-int smem_openStore(char smem[], Store * store);
-int smem_closeStore(char smem[], Store * store);
+Store * Store_getOpenedStore(const char smem[]);
+Store * Store_open(const char smem[]);
+int Store_close(const char smem[], Store * store);
 
 
 

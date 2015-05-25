@@ -14,20 +14,20 @@
 
 
 int main(int argc, const char* argv[],const char* envp[]) {
-  int shmfd;
+  //int shmfd;
   //TODO Se a loja ainda não estiver aberta (i.e., se a memória partilhada não existir), o programa termina;
 
   if(argc < 3){
     printf("Usage: \n\tger_cl <nome_mempartilhada> <num_clientes> \n");
   }
-  
+  /**
   shmfd = shm_open(argv[1],O_RDONLY|O_CREAT,0600);
   
   if ((shmfd = shm_open(argv[1],O_RDONLY,0600)) == -1 ){
     perror("Shared memmory is not yet defined");
     return 1;
   }
-  
+  **/
   char cwd[MAX_CWD_LEN];
   if (getcwd(cwd, sizeof(cwd)) == NULL){
      perror("getting current directory");
