@@ -4,13 +4,13 @@ all: makedirs cliente balcao ger_cl
 # compiling
 
 balcao: balcao.o Store.o Counter.o Attendant.o
-	gcc -Wall ../out/balcao.o ../out/classes/Store.o ../out/classes/Counter.o ../out/classes/Attendant.o -o ../bin/balcao -lrt
+	gcc -Wall ../out/balcao.o ../out/classes/Store.o ../out/classes/Counter.o ../out/classes/Attendant.o -o ../bin/balcao -lrt -pthread
 
 cliente: cliente.o Store.o Counter.o
-	gcc -Wall ../out/cliente.o ../out/classes/Store.o ../out/classes/Counter.o -o ../bin/cliente -lrt
+	gcc -Wall ../out/cliente.o ../out/classes/Store.o ../out/classes/Counter.o -o ../bin/cliente -lrt -pthread
 
 ger_cl: ger_cl.o
-	gcc -Wall ../out/ger_cl.o -o ../bin/ger_cl -lrt
+	gcc -Wall ../out/ger_cl.o -o ../bin/ger_cl -lrt -pthread
 
 
 #linking all

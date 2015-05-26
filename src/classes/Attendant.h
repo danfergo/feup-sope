@@ -5,11 +5,12 @@
 
 typedef struct attendant {
     Counter * counter;
-    char fifo_path[150];
+    int duration;
+    char fifoName[150];
 } Attendant;
 
-Attendant * Attendant_new(Counter * counter, char fifo_path[]);
-void Attendant_run(Attendant * self);
+int  Attendant_new(Counter * counter, char fifoName[]);
+void * Attendant_run(void * self);
 void Attendant_delete(Attendant * self);
 
 #endif

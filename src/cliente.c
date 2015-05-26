@@ -49,7 +49,7 @@ void Client_callCounter(Client * self){
     } //TODO error
 
     write(fd, self->fifoName, strlen(self->fifoName)+1); //TODO ha possibilidade de nao ser escrita a mensagem toda de 1x?
-    printf("-->[%s]: %s",self->counter->fifoName , self->fifoName);
+    printf("-->[%s]: %s\n",self->counter->fifoName , self->fifoName);
 
     close(fd);
 }
@@ -68,8 +68,8 @@ void Client_waitReply(Client * self){
 
     do {
         readBytes = read(fd, message, MAX_MSG_LENGTH);
-        printf("<--%s" , message);
-    } while(readBytes != 0 && strcmp(message, "fim_atendimento") != 0);
+        printf("[%s]<--:%s\n" ,self->fifoName, message);
+    } while(readBytes > 0 && strcmp(message, "fim_atendimento") != 0);
 
 
     close(fd);
