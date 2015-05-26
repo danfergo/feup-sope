@@ -44,12 +44,12 @@ void Client_init(Client * self, const char smem[]){
 void Client_callCounter(Client * self){
     int fd;
 
-    if ((fd = open(self->counter->fifoName, O_WRONLY)) != -1){
+    if ((fd = open(Counter_getFifoName(self->counter), O_WRONLY)) != -1){
         printf("FIFO '%s' openned in WRITE mode\n", self->fifoName);
     } //TODO error
 
     write(fd, self->fifoName, strlen(self->fifoName)+1); //TODO ha possibilidade de nao ser escrita a mensagem toda de 1x?
-    printf("-->[%s]: %s\n",self->counter->fifoName , self->fifoName);
+    printf("-->[%s]: %s\n",Counter_getFifoName(self->counter), self->fifoName);
 
     close(fd);
 }
@@ -98,8 +98,8 @@ int main(int argc, const char* argv[]) {
 
     setbuf(stdout, NULL);
 
-    if (argc < 3){
-        printf("Usage: cliente <nome_mempartilhada> <num_clientes> \n"); //TODO change to the correct function call
+    if (argc < 2){
+        printf("Usage: cliente <nome_mempartilhada>\n"); //TODO change to the correct function call
         return 1;
     }
     printf("Initializing client \n");

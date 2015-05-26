@@ -4,4 +4,4 @@ cd src
 make -s
 
 cd ../bin
-./cliente /f 3
+./cliente /h 3

@@ -4,4 +4,4 @@ cd src
 make -s
 
 cd ../bin
-./balcao /f 2
+./balcao /h 2

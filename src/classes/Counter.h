@@ -13,7 +13,13 @@ typedef struct counter {
     int serviceAverageDuration;
 } Counter;
 
+int Counter_getNClientsInService(Counter * self);
+char * Counter_getFifoName(Counter * self);
+
 
 void Counter_init(Counter * self, int index);
+void Counter_clientArrives(Counter * self);
+void Counter_clientLeaves(Counter * self , int duration);
+
 
 #endif

@@ -6,11 +6,10 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <signal.h>
+#include <pthread.h>
 
 #include "classes/Store.h"
 #include "classes/Attendant.h"
-
-
 
 #define MAX_MSG_LENGTH  2048
 
@@ -19,10 +18,21 @@ int counterFifoFd;
 Store * store;
 Counter * counter;
 
+void leave();
+
+void timeExpired(int signal){
+    printf("Time expired");
+    leave();
+    pthread_exit(NULL);
+}
+
+void interrupted(int signal){
+    leave();
+    exit(0);
+}
 
 
-
-void leave(int signal){
+void leave(){
     Store_closeCounter(store,counter);
     close(counterFifoFd);
 
@@ -30,7 +40,6 @@ void leave(int signal){
         Store_close(smem, store);
     }
 
-    exit(0);
 }
 
 
@@ -42,8 +51,13 @@ int main(int argc, const char* argv[],const char* envp[]) {
     }
 
     strcpy(smem,argv[1]);
-    signal(SIGINT,leave);
+    signal(SIGINT,interrupted);
+    signal(SIGALRM,timeExpired);
     setbuf(stdout, NULL);
+
+    if(alarm(atoi(argv[2])) < 0){
+        //TODO
+    }
 
     store = Store_open(smem);
     counter = Store_openCounter(store);
@@ -71,6 +85,6 @@ int main(int argc, const char* argv[],const char* envp[]) {
         Attendant_new(counter, message);
     }
 
-    leave(0);
+    leave();
     return 0;
 }
