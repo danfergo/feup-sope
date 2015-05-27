@@ -40,7 +40,7 @@ void interrupted(int signal){
 
 void leave(){
     // pthread_mutex_lock(&store->m_ending);
-    sem_t * sem =  sem_open("/tmp/randomsemf", O_CREAT|O_EXCL, mode_t mode, unsigned value);
+   // sem_t * sem =  sem_open("/tmp/randomsemf", O_CREAT|O_EXCL, mode_t mode, unsigned value);
 
         pthread_mutex_lock(&store->m_choosingCounter);
             Counter_close(counter,duration);
