@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <time.h>
 
 #define _(X,Y,Z)		if((X) < 0){perror(Y); return Z;}
 
@@ -24,7 +25,7 @@ int Counter_getDuration(Counter * self){
 int Counter_init(Counter * self, int index){
 
   self->index = index;
-  self->openingTime = 0; //TODO
+  self->openingTime = time(NULL);
   self->duration = -1;
   self->nClientsInService = 0;
   self->alreadyAttended = 0;
