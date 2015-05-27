@@ -14,9 +14,14 @@
 #define
 srand(time(NULL));
 **/
+static int log_fd;
+static char * message;
 
-int Attendant_new(Counter * counter, char fifoName[]){
+int Attendant_new(Counter * counter, char fifoName[], int fd, char * msg){
     Attendant * self = malloc(sizeof(Attendant));
+
+    log_fd = fd;
+    message = msg;
 
     strcpy(self->fifoName,fifoName);
     self->counter  = counter;
@@ -54,6 +59,7 @@ void * Attendant_run(void * self){
 
 
     write(fd, "fim_atendimento", strlen("fim_atendimento")+1); //TODO ha possibilidade de nao ser escrita a mensagem toda de 1x?
+    writeToFile(log_fd, "Balcao", selfCounter->index, "fim_atend_cli", message);
     printf("-->[%s]: %s\n",selfFifoName , "fim_atendimento");
 
 

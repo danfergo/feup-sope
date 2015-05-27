@@ -20,6 +20,8 @@ typedef struct client {
   Counter * counter;
 } Client;
 
+static int fd_log;
+
 /**
 1
 **/
@@ -35,6 +37,7 @@ void Client_init(Client * self, const char smem[]){
 
     //Escolhe o balcão com menor número de clientes em atendimento
     self->counter = Store_getFreerCounter(self->store);
+    writeToFile(fd_log, "Client", Counter_getIndex(self->counter), "pede_atendimento", self->fifoName);
 }
 
 
@@ -48,9 +51,8 @@ void Client_callCounter(Client * self){
     printf("FIFO '%s' openned in WRITE mode\n", self->fifoName);
 
     write(fd, self->fifoName, strlen(self->fifoName)+1); //TODO ha possibilidade de nao ser escrita a mensagem toda de 1x?
+
     printf("-->[%s]: %s\n",Counter_getFifoName(self->counter), self->fifoName);
-
-
 
     close(fd);
 }
@@ -68,8 +70,11 @@ void Client_waitReply(Client * self){
 
     do {
         readBytes = read(fd, message, MAX_MSG_LENGTH);
+        writeToFile(fd_log, "Client", Counter_getIndex(self->counter), "fim_atendimento", self->fifoName);
         printf("[%s]<--:%s\n" ,self->fifoName, message);
     } while(readBytes > 0 && strcmp(message, "fim_atendimento") != 0);
+
+
 
     close(fd);
 }
@@ -95,6 +100,8 @@ int main(int argc, const char* argv[]) {
         printf("Usage: cliente <nome_mempartilhada>\n"); //TODO change to the correct function call
         return 1;
     }
+
+    fd_log = openLogFile(argv[1]);
     printf("Initializing client \n");
 
     Client client;

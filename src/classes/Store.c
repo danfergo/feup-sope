@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/mman.h>
 #include <sys/stat.h>        /* For mode constants */
 #include <sys/types.h>       /* For ftruncate */
@@ -121,5 +122,61 @@ int Store_close(const char smem[], Store * store){
 	_(shm_unlink(smem), "Store_close, shm_unlink", -2);
 
 	return r;
+}
+
+void getTimeFormated(char * buffer){
+    time_t rawtime;
+    struct tm * timeinfo;
+
+    time (&rawtime);
+    timeinfo = localtime (&rawtime);
+
+    strftime (buffer, 80, "%F %T", timeinfo);
+}
+
+void writeStatisticsTable(Store * store){
+	char table[MAX_MSG_LENGTH];
+	int i = 0;
+
+	sprintf(table, "\nBalcao |     Abertura    |  Nome   |          Num_clientes         | Tempo_medio\n #     | Tempo | Duracao |  FIFO   | em_atendimento | ja_atendidos | atendimento\n------------------------------------------------------------------------------\n");
+
+	//printf("%d\n", store->nCounters);
+	for(; i < store->nCounters; i++){
+		//printf("a\n");
+		sprintf(
+			table + strlen(table),
+			" %-6d| %-6d| %-8d| %-8s| %-15d| %-13d| %-11d\n",
+			store->counters[i].index,
+			store->counters[i].openingTime%100000,
+			store->counters[i].duration,
+			rindex(store->counters[i].fifoName,'/') + 1,
+			store->counters[i].nClientsInService,
+			store->counters[i].alreadyAttended,
+			store->counters[i].serviceAverageDuration
+		);
+	}
+
+
+	printf("%s", table);
+}
+
+
+int openLogFile(char * shared_memmory_name){
+    char logfile[MAX_MSG_LENGTH] = "..";
+
+    strcpy(logfile + 2, shared_memmory_name);
+    strcat(logfile, ".log");
+
+    return open(logfile, O_RDWR|O_CREAT|O_APPEND, 0660);
+}
+
+void writeToFile(int fd, char * who, int counter, char * what, char * channel){
+    char string[MAX_MSG_LENGTH];
+    char time[80];
+    getTimeFormated(time);
+    sprintf(string, " %-19s | %-6s | %-6d | %-20s | %-16s\n", time, who, counter, what, channel);
+    if(write(fd, string, strlen(string)) == -1){
+        perror("Writing to file");
+    }
 }
 

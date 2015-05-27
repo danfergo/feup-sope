@@ -28,4 +28,9 @@ Store * Store_getOpenedStore(const char smem[]);
 Store * Store_open(const char smem[]);
 int Store_close(const char smem[], Store * store);
 
+void getTimeFormated(char * buffer);
+void writeStatisticsTable();
+int openLogFile();
+void writeToFile(int fd, char * who, int counter, char * what, char * channel);
+
 #endif

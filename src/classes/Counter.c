@@ -25,6 +25,10 @@ int Counter_getDuration(Counter * self){
     return self->duration;
 }
 
+int Counter_getIndex(Counter * self){
+    return self->index;
+}
+
 int Counter_init(Counter * self, int index){
 
   self->index = index;
