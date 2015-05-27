@@ -54,7 +54,7 @@ int main(int argc, const char* argv[],const char* envp[]) {
       if(pid == 0){
           //printf("%d \n", i);
           
-          execle(cli_path, "cliente", NULL, envp);
+          execle(cli_path, "cliente", argv[1], NULL, envp);
           perror("launching client");
           return 2;
 

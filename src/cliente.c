@@ -50,6 +50,8 @@ void Client_callCounter(Client * self){
     write(fd, self->fifoName, strlen(self->fifoName)+1); //TODO ha possibilidade de nao ser escrita a mensagem toda de 1x?
     printf("-->[%s]: %s\n",Counter_getFifoName(self->counter), self->fifoName);
 
+
+
     close(fd);
 }
 
