@@ -11,7 +11,8 @@ typedef struct Store {
     int openingTime;
     int nCounters;
     Counter counters[MAX_COUNTERS];
-
+    pthread_mutex_t m_choosingCounter;
+    pthread_mutex_t m_ending;
 } Store;
 
 int Store_init(Store * self);

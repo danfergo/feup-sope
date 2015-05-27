@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "classes/Store.h"
 #define MAX_CWD_LEN     1024
 #define MAX_SMEM_LEN    1024
 #define CLI_PATH_LEN    1124
@@ -19,6 +20,13 @@ int main(int argc, const char* argv[],const char* envp[]) {
   if(argc < 3){
     printf("Usage: ger_cl <nome_mempartilhada> <num_clientes> \n");
   }
+
+
+  if (Store_getOpenedStore(argv[1]) == (Store *)0 ){
+    printf("Shared memmory is not yet defined \n");
+    return 1;
+  }
+
 
   char cwd[MAX_CWD_LEN];
   if (getcwd(cwd, sizeof(cwd)) == NULL){
@@ -38,6 +46,8 @@ int main(int argc, const char* argv[],const char* envp[]) {
       pid = fork();
 
       if(pid == 0){
+          //printf("%d \n", i);
+          
           execle(cli_path, "cliente", argv[1], NULL, envp);
           perror("launching client");
           return 2;

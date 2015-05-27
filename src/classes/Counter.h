@@ -8,10 +8,6 @@
 #define MAX_FIFO_NAME_LEN   1024
 #define MAX_MSG_LENGTH  2048
 
-pthread_cond_t c_nClientsInService_changed;
-pthread_mutex_t m_changing_nClientsInService;
-
-
 typedef struct counter {
     int index;
     int openingTime;
@@ -27,9 +23,10 @@ char * Counter_getFifoName(Counter * self);
 int Counter_getDuration(Counter * self);
 int Counter_getIndex(Counter * self);
 
+void Counter_waitToEnd(Counter * self);
 
 int Counter_init(Counter * self, int index);
-int Counter_close(Counter * self, int duration);
+void Counter_close(Counter * self, int duration);
 
 void Counter_clientArrives(Counter * self);
 void Counter_clientLeaves(Counter * self , int duration);

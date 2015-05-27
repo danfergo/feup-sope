@@ -21,9 +21,10 @@ _(pthread_mutex_unlock(&self->m_nCounters), "Store_closeCounter, mutex_unlock",-
 int Store_init(Store * self){
 
 	//_(pthread_mutex_init(&self->m_changingNCounters,NULL), "Store_init, mutex_init m_changingNCounters", -1);
-	//_(pthread_mutex_init(&self->m_choosingCounter,NULL), "Store_init, mutex_init m_choosingCounter", -2);
+	_(pthread_mutex_init(&self->m_choosingCounter,NULL), "Store_init, mutex_init m_choosingCounter", -2);
+	_(pthread_mutex_init(&self->m_ending,NULL), "Store_init, mutex_init m_ending", -3);
 
-	self->openingTime = 100; //TODO get operating system time.
+	self->openingTime = time(NULL);
 	self->nCounters = 0;
 
 	return 0;
@@ -31,20 +32,28 @@ int Store_init(Store * self){
 
 int Store_delete(Store *self){
 	//_(pthread_mutex_destroy(&self->m_nCounters), "Store_delete, mutex_destroy m_nCounters" ,-1);
-	//_(pthread_mutex_destroy(&self->m_choosingCounter), "Store_delete, mutex_destroy m_nCounters" ,-2);
+	_(pthread_mutex_destroy(&self->m_choosingCounter), "Store_delete, mutex_destroy m_nCounters" ,-2);
+	_(pthread_mutex_destroy(&self->m_ending), "Store_delete, mutex_destroy m_ending" ,-3);
 
 	return 0;
 }
 
 
 Counter * Store_getFreerCounter(Store * self){
-	int i = 0, freerCounterIndex = 0;
+	int i = 0, freerCounterIndex = -1;
 
 	for(; i < self->nCounters; i++){
-		if(Counter_getDuration(&self->counters[i]) == -1 && Counter_getNClientsInService(&self->counters[i]) < Counter_getNClientsInService(&self->counters[freerCounterIndex])){
+		if(Counter_getDuration(&self->counters[i]) == -1){
+			if(freerCounterIndex == -1 || Counter_getNClientsInService(&self->counters[i]) < Counter_getNClientsInService(&self->counters[freerCounterIndex]) ) {
 			freerCounterIndex = i;
+			}
 		}
 	}
+
+	if(freerCounterIndex == -1){
+		return 0;
+	}
+
 	return &self->counters[freerCounterIndex];
 }
 
@@ -61,6 +70,7 @@ Counter * Store_openCounter(Store * self){
 	int index = self->nCounters++;
 
 	Counter_init(&self->counters[index], self->nCounters);
+
 	return &self->counters[index];
 }
 
@@ -120,7 +130,6 @@ int Store_close(const char smem[], Store * store){
 
 	_(munmap(store,sizeof(Store)), "Store_close, munmap", -1);
 	_(shm_unlink(smem), "Store_close, shm_unlink", -2);
-
 	return r;
 }
 

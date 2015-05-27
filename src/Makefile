@@ -9,8 +9,8 @@ balcao: balcao.o Store.o Counter.o Attendant.o
 cliente: cliente.o Store.o Counter.o
 	gcc -Wall ../out/cliente.o ../out/classes/Store.o ../out/classes/Counter.o -o ../bin/cliente -lrt -pthread
 
-ger_cl: ger_cl.o
-	gcc -Wall ../out/ger_cl.o -o ../bin/ger_cl -lrt -pthread
+ger_cl: ger_cl.o Store.o Counter.o
+	gcc -Wall ../out/ger_cl.o ../out/classes/Store.o ../out/classes/Counter.o -o ../bin/ger_cl -lrt -pthread
 
 
 #linking all
@@ -21,7 +21,7 @@ balcao.o: balcao.c classes/Store.h classes/Counter.h classes/Attendant.h
 cliente.o: cliente.c classes/Store.h classes/Counter.h
 	gcc -Wall -c cliente.c -o ../out/cliente.o
 
-ger_cl.o: ger_cl.c
+ger_cl.o: ger_cl.c classes/Store.h classes/Counter.h
 	gcc -Wall -c ger_cl.c -o ../out/ger_cl.o
 
 

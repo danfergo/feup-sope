@@ -36,7 +36,17 @@ void Client_init(Client * self, const char smem[]){
     _(mkfifo(self->fifoName, 0660), "Client_init, mkfifo", 12);
 
     //Escolhe o balcão com menor número de clientes em atendimento
-    self->counter = Store_getFreerCounter(self->store);
+
+    pthread_mutex_lock(&self->store->m_choosingCounter);
+        printf("1111 \n");
+
+    if((self->counter = Store_getFreerCounter(self->store)) == 0){
+        pthread_mutex_unlock(&self->store->m_choosingCounter);
+
+        printf("Store closed before i could choose the counter \n");
+        exit(13);
+    }
+
     writeToFile(fd_log, "Client", Counter_getIndex(self->counter), "pede_atendimento", self->fifoName);
 }
 

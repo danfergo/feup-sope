@@ -10,14 +10,10 @@
 #include <errno.h>
 
 
-/**
-#define
-srand(time(NULL));
-**/
 static int log_fd;
 static char * message;
 
-int Attendant_new(Counter * counter, char fifoName[], int fd, char * msg){
+int Attendant_new(Counter * counter, Store * store, char fifoName[], int fd, char * msg){
     Attendant * self = malloc(sizeof(Attendant));
 
     log_fd = fd;
@@ -25,6 +21,7 @@ int Attendant_new(Counter * counter, char fifoName[], int fd, char * msg){
 
     strcpy(self->fifoName,fifoName);
     self->counter  = counter;
+    self->store  = store;
 
     pthread_t tid;
     if (pthread_create(&tid, NULL,Attendant_run, self) < 0){
@@ -44,8 +41,10 @@ int Attendant_new(Counter * counter, char fifoName[], int fd, char * msg){
 void * Attendant_run(void * self){
     char * selfFifoName = ((Attendant *)self)->fifoName;
     Counter * selfCounter = ((Attendant *)self)->counter;
+    Store * selfStore = ((Attendant *)self)->store;
 
     Counter_clientArrives(selfCounter);
+    pthread_mutex_unlock(&selfStore->m_choosingCounter);
 
     int fd;
     if ((fd = open(selfFifoName, O_WRONLY)) != -1){
@@ -63,7 +62,9 @@ void * Attendant_run(void * self){
     printf("-->[%s]: %s\n",selfFifoName , "fim_atendimento");
 
 
-    Counter_clientLeaves(selfCounter,workingTime);
+    //pthread_mutex_lock(&selfStore->m_choosingCounter);
+        Counter_clientLeaves(selfCounter,workingTime);
+    //pthread_mutex_unlock(&selfStore->m_choosingCounter);
 
     close(fd);
     free(self);

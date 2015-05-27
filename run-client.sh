@@ -4,4 +4,4 @@ cd src
 make -s
 
 cd ../bin
-./ger_cl /x 10
+./ger_cl /khwss 10

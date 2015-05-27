@@ -16,7 +16,7 @@
 
 #define MAX_MSG_LENGTH  2048
 
-char smem[1024];
+char smem[MAX_MSG_LENGTH];
 int counterFifoFd;
 Store * store;
 Counter * counter;
@@ -39,25 +39,22 @@ void interrupted(int signal){
 
 
 void leave(){
+    // pthread_mutex_lock(&store->m_ending);
+    sem_t * sem =  sem_open("/tmp/randomsemf", O_CREAT|O_EXCL, mode_t mode, unsigned value);
 
+        pthread_mutex_lock(&store->m_choosingCounter);
+            Counter_close(counter,duration);
+         pthread_mutex_unlock(&store->m_choosingCounter);
 
+    close(counterFifoFd);
     _(unlink(counter->fifoName),"leave, unlink", 23);
 
-    Counter_close(counter,duration);
-    close(counterFifoFd);
     writeToFile(log_fd, "Balcao", counter->index, "fecha_balcao", counter->fifoName);
 
-    pthread_mutex_lock(&m_changing_nClientsInService);
-
-    while (counter->nClientsInService < 0)
-        pthread_cond_wait(&c_nClientsInService_changed,&m_changing_nClientsInService);
-
-    pthread_mutex_unlock(&m_changing_nClientsInService);
-
+    Counter_waitToEnd(counter);
 
     if(Store_getNumberOfOpenedCounters(store) == 0){
 
-        while(counter->nClientsInService > 0);
         writeStatisticsTable(store);
 
         writeToFile(log_fd, "Balcao", counter->index, "fecha_loja", counter->fifoName);
@@ -65,6 +62,7 @@ void leave(){
         Store_close(smem, store);
 
     }
+    //pthread_mutex_unlock(&store->m_ending);
 
 }
 
@@ -84,6 +82,7 @@ int main(int argc, const char* argv[],const char* envp[]) {
     signal(SIGALRM,timeExpired);
     setbuf(stdout, NULL);
     _(alarm(duration),"main, alarm", 2);
+    srand(time(NULL));
 
     store = Store_open(smem);
     counter = Store_openCounter(store);
@@ -110,10 +109,12 @@ int main(int argc, const char* argv[],const char* envp[]) {
     char message[MAX_MSG_LENGTH];
     printf("Listening on %s: \n", counter->fifoName);
     while(1){
+
         read(counterFifoFd, message, MAX_MSG_LENGTH);
         writeToFile(log_fd, "Balcao", counter->index, "inicia_atend_cli", message);
         printf("[%s]<--: %s\n", counter->fifoName, message);
-        Attendant_new(counter, message, log_fd, message);
+        Attendant_new(counter,store, message, log_fd, message);
+            printf("asdasdds");
 
     }
 

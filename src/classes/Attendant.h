@@ -6,11 +6,12 @@
 
 typedef struct attendant {
     Counter * counter;
+    Store * store;
     int duration;
     char fifoName[150];
 } Attendant;
 
-int  Attendant_new(Counter * counter, char fifoName[], int fd, char * message);
+int  Attendant_new(Counter * counter, Store * store, char fifoName[], int fd, char * message);
 void * Attendant_run(void * self);
 void Attendant_delete(Attendant * self);
 
