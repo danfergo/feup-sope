@@ -140,9 +140,7 @@ void writeStatisticsTable(Store * store){
 
 	sprintf(table, "\nBalcao |     Abertura    |  Nome   |          Num_clientes         | Tempo_medio\n #     | Tempo | Duracao |  FIFO   | em_atendimento | ja_atendidos | atendimento\n------------------------------------------------------------------------------\n");
 
-	//printf("%d\n", store->nCounters);
 	for(; i < store->nCounters; i++){
-		//printf("a\n");
 		sprintf(
 			table + strlen(table),
 			" %-6d| %-6d| %-8d| %-8s| %-15d| %-13d| %-11d\n",

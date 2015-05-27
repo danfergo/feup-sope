@@ -51,7 +51,6 @@ void Client_callCounter(Client * self){
     printf("FIFO '%s' openned in WRITE mode\n", self->fifoName);
 
     write(fd, self->fifoName, strlen(self->fifoName)+1); //TODO ha possibilidade de nao ser escrita a mensagem toda de 1x?
-
     printf("-->[%s]: %s\n",Counter_getFifoName(self->counter), self->fifoName);
 
     close(fd);
@@ -97,7 +96,7 @@ int main(int argc, const char* argv[]) {
     setbuf(stdout, NULL);
 
     if (argc < 2){
-        printf("Usage: cliente <nome_mempartilhada>\n"); //TODO change to the correct function call
+        printf("Usage: cliente <nome_mempartilhada>\n");
         return 1;
     }
 

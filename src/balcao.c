@@ -72,7 +72,7 @@ void leave(){
 int main(int argc, const char* argv[],const char* envp[]) {
 
     if (argc < 3){
-        printf("Usage: balcao <nome_mempartilhada> <duração> \n"); //TODO change to the correct function call
+        printf("Usage: balcao <nome_mempartilhada> <duração> \n");
         exit(1);
     }
 
