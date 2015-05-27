@@ -1,6 +1,7 @@
 #ifndef STORE_H
 #define STORE_H
 
+#include <pthread.h>
 
 #include "Counter.h"
 
@@ -10,21 +11,22 @@ typedef struct Store {
     int openingTime;
     int nCounters;
     Counter counters[MAX_COUNTERS];
+    pthread_mutex_t m_nCounters;
+    pthread_mutex_t m_choosingCounter;
 } Store;
 
-void Store_init(Store * self);
+int Store_init(Store * self);
+int Store_delete(Store * self);
+
+int Store_getNumberOfOpenedCounters(Store *self);
 
 Counter * Store_getFreerCounter(Store * self);
 Counter * Store_getOpenedCounter(Store * self, int index);
+
 Counter * Store_openCounter(Store * self);
-void Store_closeCounter(Store * self,const Counter * counter);
-
-
 
 Store * Store_getOpenedStore(const char smem[]);
 Store * Store_open(const char smem[]);
 int Store_close(const char smem[], Store * store);
-
-
 
 #endif

@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
+#define _(X,Y,Z)		if((X) < 0){perror(Y); return Z;}
 
 int Counter_getNClientsInService(Counter * self){
     return self->nClientsInService;
@@ -16,9 +17,11 @@ char * Counter_getFifoName(Counter * self){
     return self->fifoName;
 }
 
+int Counter_getDuration(Counter * self){
+    return self->duration;
+}
 
-
-void Counter_init(Counter * self, int index){
+int Counter_init(Counter * self, int index){
 
   self->index = index;
   self->openingTime = 0; //TODO
@@ -29,13 +32,22 @@ void Counter_init(Counter * self, int index){
 
   printf("open counter \n");
 
+  sprintf(self->fifoName, "/tmp/fb_%d", getpid());//TODO confirm this
 
-  sprintf(self->fifoName, "/tmp/fb_%d", getpid());
+  _(mkfifo(self->fifoName, 0660), "Counter_init, mkfifo",0);
 
-  if (mkfifo(self->fifoName, 0660) < 0){
-        perror("Opening fifo");
-  }
+  return 0;
 }
+
+int Counter_close(Counter * self, int duration){
+    if(self->duration < 0){
+          self->duration = duration;
+          return 0;
+    }
+    return -1;
+}
+
+
 
 void Counter_clientArrives(Counter * self){
   self->nClientsInService++;

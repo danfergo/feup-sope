@@ -11,12 +11,15 @@
 #include "classes/Store.h"
 #include "classes/Attendant.h"
 
+#define _(X,Y,Z)		if((X) < 0){perror(Y); exit(Z);}
+
 #define MAX_MSG_LENGTH  2048
 
 char smem[1024];
 int counterFifoFd;
 Store * store;
 Counter * counter;
+int duration;
 
 void leave();
 
@@ -33,10 +36,12 @@ void interrupted(int signal){
 
 
 void leave(){
-    Store_closeCounter(store,counter);
     close(counterFifoFd);
+    _(unlink(counter->fifoName),"leave, unlink", 23);
 
-    if(store->nCounters == 0){
+    Counter_close(counter,duration);
+
+    if(Store_getNumberOfOpenedCounters(store) == 0){
         Store_close(smem, store);
     }
 
@@ -51,33 +56,21 @@ int main(int argc, const char* argv[],const char* envp[]) {
     }
 
     strcpy(smem,argv[1]);
+    duration = atoi(argv[2]);
     signal(SIGINT,interrupted);
     signal(SIGALRM,timeExpired);
     setbuf(stdout, NULL);
-
-    if(alarm(atoi(argv[2])) < 0){
-        //TODO
-    }
+    _(alarm(duration),"main, alarm", 2);
 
     store = Store_open(smem);
     counter = Store_openCounter(store);
 
     printf("N open counters: %d \n", store->nCounters);
 
-    counterFifoFd = open(counter->fifoName,  O_RDWR);
-    if (counterFifoFd < 0){
-        perror ("Error opening file");
-        return 1;
-    }
-
-
-    /** TODO criar e iniciar as outras variáveis locais necessárias (e.g.
-    variáveis de sincronização locais, necessárias ao acesso correto de todos os threads do processo à linha
-    referente ao balcão, na Tabela de Balcões da memória partilhada global) **/
+    _( counterFifoFd = open(counter->fifoName,  O_RDWR), "main, open", 3);
 
 
     char message[MAX_MSG_LENGTH];
-
     printf("Listening on %s: \n", counter->fifoName);
     while(1){
         read(counterFifoFd, message, MAX_MSG_LENGTH);
