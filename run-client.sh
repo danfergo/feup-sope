@@ -4,4 +4,4 @@ cd src
 make -s
 
 cd ../bin
-./cliente /h 3
+./ger_cl /x 10

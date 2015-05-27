@@ -119,6 +119,5 @@ int main(int argc, const char* argv[],const char* envp[]) {
 
 
     leave();
-    printf("AA\n");
     return 0;
 }
