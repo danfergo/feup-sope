@@ -40,7 +40,7 @@ Counter * Store_getFreerCounter(Store * self){
 	int i = 0, freerCounterIndex = 0;
 
 	for(; i < self->nCounters; i++){
-		if(Counter_getNClientsInService(&self->counters[i]) < Counter_getNClientsInService(&self->counters[freerCounterIndex])){
+		if(Counter_getDuration(&self->counters[i]) != -1 && Counter_getNClientsInService(&self->counters[i]) < Counter_getNClientsInService(&self->counters[freerCounterIndex])){
 			freerCounterIndex = i;
 		}
 	}
