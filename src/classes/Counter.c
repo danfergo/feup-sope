@@ -60,7 +60,11 @@ void Counter_clientArrives(Counter * self){
 }
 
 void Counter_clientLeaves(Counter * self , int duration){
-  self->nClientsInService--;
+    pthread_mutex_lock(&m_changing_nClientsInService);
+        self->nClientsInService--;
+        pthread_cond_signal(&c_nClientsInService_changed);
+    pthread_mutex_unlock(&m_changing_nClientsInService);
+
 
   self->serviceAverageDuration = (self->alreadyAttended*self->serviceAverageDuration +  duration)/(double)(self->alreadyAttended + 1);
   self->alreadyAttended++;

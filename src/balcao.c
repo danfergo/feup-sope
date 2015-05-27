@@ -44,7 +44,7 @@ void leave(){
 
     pthread_mutex_lock(&m_changing_nClientsInService);
 
-        while (counter->nClientsInService > 0)
+        while (counter->nClientsInService < 0)
             pthread_cond_wait(&c_nClientsInService_changed,&m_changing_nClientsInService);
 
     pthread_mutex_unlock(&m_changing_nClientsInService);
