@@ -1,7 +1,15 @@
 #ifndef COUNTER_H
 #define COUNTER_H
 
+#include <pthread.h>
+#include <time.h>
+
+
 #define MAX_FIFO_NAME_LEN   1024
+
+pthread_cond_t c_nClientsInService_changed;
+pthread_mutex_t m_changing_nClientsInService;
+
 
 typedef struct counter {
     int index;

@@ -26,7 +26,7 @@ void leave();
 void timeExpired(int signal){
     printf("Time expired");
     leave();
-    pthread_exit(NULL);
+    exit(0);
 }
 
 void interrupted(int signal){
@@ -36,15 +36,22 @@ void interrupted(int signal){
 
 
 void leave(){
-    close(counterFifoFd);
+
     _(unlink(counter->fifoName),"leave, unlink", 23);
 
     Counter_close(counter,duration);
+    close(counterFifoFd);
+
+    pthread_mutex_lock(&m_changing_nClientsInService);
+
+        while (counter->nClientsInService > 0)
+            pthread_cond_wait(&c_nClientsInService_changed,&m_changing_nClientsInService);
+
+    pthread_mutex_unlock(&m_changing_nClientsInService);
 
     if(Store_getNumberOfOpenedCounters(store) == 0){
         Store_close(smem, store);
     }
-
 }
 
 

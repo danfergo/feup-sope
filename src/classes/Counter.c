@@ -8,6 +8,9 @@
 #include <errno.h>
 #include <time.h>
 
+pthread_cond_t c_nClientsInService_changed = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t m_changing_nClientsInService = PTHREAD_MUTEX_INITIALIZER;
+
 #define _(X,Y,Z)		if((X) < 0){perror(Y); return Z;}
 
 int Counter_getNClientsInService(Counter * self){
@@ -49,13 +52,16 @@ int Counter_close(Counter * self, int duration){
 }
 
 
-
 void Counter_clientArrives(Counter * self){
-  self->nClientsInService++;
+  pthread_mutex_lock(&m_changing_nClientsInService);
+      self->nClientsInService++;
+      pthread_cond_signal(&c_nClientsInService_changed);
+  pthread_mutex_unlock(&m_changing_nClientsInService);
 }
 
 void Counter_clientLeaves(Counter * self , int duration){
-  self->serviceAverageDuration = (self->alreadyAttended*self->serviceAverageDuration +  duration)/(double)(self->alreadyAttended + 1);
   self->nClientsInService--;
+
+  self->serviceAverageDuration = (self->alreadyAttended*self->serviceAverageDuration +  duration)/(double)(self->alreadyAttended + 1);
   self->alreadyAttended++;
 }

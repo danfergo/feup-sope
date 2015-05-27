@@ -19,8 +19,8 @@ _(pthread_mutex_unlock(&self->m_nCounters), "Store_closeCounter, mutex_unlock",-
 
 int Store_init(Store * self){
 
-	_(pthread_mutex_init(&self->m_nCounters,NULL), "Store_init, mutex_init m_nCounters", -1);
-	_(pthread_mutex_init(&self->m_choosingCounter,NULL), "Store_init, mutex_init m_choosingCounter", -2);
+	//_(pthread_mutex_init(&self->m_changingNCounters,NULL), "Store_init, mutex_init m_changingNCounters", -1);
+	//_(pthread_mutex_init(&self->m_choosingCounter,NULL), "Store_init, mutex_init m_choosingCounter", -2);
 
 	self->openingTime = 100; //TODO get operating system time.
 	self->nCounters = 0;
@@ -29,8 +29,8 @@ int Store_init(Store * self){
 }
 
 int Store_delete(Store *self){
-	_(pthread_mutex_destroy(&self->m_nCounters), "Store_delete, mutex_destroy m_nCounters" ,-1);
-	_(pthread_mutex_destroy(&self->m_choosingCounter), "Store_delete, mutex_destroy m_nCounters" ,-2);
+	//_(pthread_mutex_destroy(&self->m_nCounters), "Store_delete, mutex_destroy m_nCounters" ,-1);
+	//_(pthread_mutex_destroy(&self->m_choosingCounter), "Store_delete, mutex_destroy m_nCounters" ,-2);
 
 	return 0;
 }
